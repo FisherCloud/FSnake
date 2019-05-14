@@ -5,8 +5,11 @@ package io.github.fishercloud.fsnake.model;
  */
 
 public class Point {
-    private int x;
-    private int y;
+    private int x = 0;
+    private int y = 0;
+
+    public Point() {
+    }
 
     public Point(int x, int y) {
         this.x = x;

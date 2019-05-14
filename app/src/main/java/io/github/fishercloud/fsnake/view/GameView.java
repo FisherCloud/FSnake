@@ -11,8 +11,10 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.List;
+import java.util.Random;
 
 import io.github.fishercloud.fsnake.Control;
+import io.github.fishercloud.fsnake.model.Food;
 import io.github.fishercloud.fsnake.model.Grid;
 import io.github.fishercloud.fsnake.model.Point;
 import io.github.fishercloud.fsnake.model.Snake;
@@ -26,8 +28,14 @@ public class GameView extends View {
     private boolean isFailed = false;
     private Paint paint = new Paint();
 
-    private Grid gridBean;
-    private Snake snakeBean;
+    private Grid grid;
+    private Snake snake;
+    private Food food;
+    private int count = 0;
+
+    public int getCount() {
+        return count;
+    }
 
     private Control control = Control.UP;
 
@@ -42,11 +50,11 @@ public class GameView extends View {
     }
 
     private void init() {
-        gridBean = new Grid();//创建格子对象，画格子时候使用
-        snakeBean = new Snake();//创建一个蛇对象。这时候蛇对象是空的，我们需要初始化一个值
-
-        Point Point = new Point(gridBean.getGridSize() / 2, gridBean.getGridSize() / 2);
-        snakeBean.getSnake().add(Point);//定义一个中心点 ，添加到蛇身上
+        grid = new Grid();//创建格子对象，画格子时候使用
+        snake = new Snake();//创建一个蛇对象。这时候蛇对象是空的，我们需要初始化一个值
+        food = new Food(grid.getGridSize() / 2, grid.getGridSize() / 2);//创建一个食物对象
+        Point Point = new Point(grid.getGridSize() / 2, grid.getGridSize() / 2);
+        snake.getSnake().add(Point);//定义一个中心点 ，添加到蛇身上
     }
 
     @Override
@@ -54,50 +62,72 @@ public class GameView extends View {
         if (isFailed) {
             paint.setTextSize(50);
             paint.setColor(Color.BLACK);
-            canvas.drawText("你输了", (getRootView().getWidth() >> 1) - 50, (getRootView().getHeight() >> 1) - 100, paint);
-            LogUtil.d("你输了");
+            canvas.drawText("游戏结束", (getRootView().getWidth() >> 1) - 150, (getRootView().getHeight() >> 1) - 100, paint);
+            canvas.drawText("您一共吃到了" + count + "个食物", (getRootView().getWidth() >> 1) - 200, getRootView().getHeight() >> 1, paint);
+            LogUtil.d("游戏结束");
             return;
         }
-        if (gridBean != null) {
+        if (grid != null) {
             paint.setColor(Color.RED);
             drawGrid(canvas);
         }
-        if (snakeBean != null) {
+        if (snake != null) {
             paint.setColor(Color.GREEN);
             drawSnake(canvas);
         }
+        if (food != null) {
+            paint.setColor(Color.RED);
+            drawFood(canvas);
+        }
+
+        paint.setColor(Color.BLACK);
+        paint.setTextSize(50);
+        canvas.drawText("得分:" + count, (getRootView().getWidth() >> 1) - 150, (getRootView().getHeight() >> 1) + 100, paint);
     }
 
     private void drawSnake(Canvas canvas) {
-        List<Point> snake = snakeBean.getSnake();
-        for (Point point : snake) {
-            int startX = gridBean.getOffset() + gridBean.getGridWidth() * point.getX();
-            int stopX = startX + gridBean.getGridWidth();
-            int startY = gridBean.getOffset() + gridBean.getGridWidth() * point.getY();
-            int stopY = startY + +gridBean.getGridWidth();
+        List<Point> snakes = snake.getSnake();
+        for (Point point : snakes) {
+            int startX = grid.getOffset() + grid.getGridWidth() * point.getX();
+            int stopX = startX + grid.getGridWidth();
+            int startY = grid.getOffset() + grid.getGridWidth() * point.getY();
+            int stopY = startY + +grid.getGridWidth();
             canvas.drawRect(startX, startY, stopX, stopY, paint);
         }
     }
 
     private void drawFood(Canvas canvas) {
+        int x = grid.getOffset() + grid.getGridWidth() * food.getX();
+        int x2 = grid.getGridWidth() + x;
+        int y = grid.getOffset() + grid.getGridWidth() * food.getY();
+        int y2 = grid.getGridWidth() + y;
+        canvas.drawRect(x, y, x2, y2, paint);
+    }
 
+    private boolean isEat(Point point) {
+        LogUtil.i("point.get(x) = " + point.getX());
+        if (point.getX() == food.getX() && point.getY() == food.getY()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private void drawGrid(Canvas canvas) {
         //画竖线
-        for (int i = 0; i <= gridBean.getGridSize(); i++) {
-            int startX = gridBean.getOffset() + gridBean.getGridWidth() * i;
+        for (int i = 0; i <= grid.getGridSize(); i++) {
+            int startX = grid.getOffset() + grid.getGridWidth() * i;
             int stopX = startX;
-            int startY = gridBean.getOffset();//+gridBean.getGridWidth() * i
-            int stopY = startY + gridBean.getLineLength();//
+            int startY = grid.getOffset();//+grid.getGridWidth() * i
+            int stopY = startY + grid.getLineLength();//
             canvas.drawLine(startX, startY, stopX, stopY, paint);
         }
         //画横线
-        for (int i = 0; i <= gridBean.getGridSize(); i++) {
-            int startX = gridBean.getOffset();//+gridBean.getGridWidth() * i
-            int stopX = startX + gridBean.getLineLength();
+        for (int i = 0; i <= grid.getGridSize(); i++) {
+            int startX = grid.getOffset();//+grid.getGridWidth() * i
+            int stopX = startX + grid.getLineLength();
 
-            int startY = gridBean.getOffset() + gridBean.getGridWidth() * i;
+            int startY = grid.getOffset() + grid.getGridWidth() * i;
             int stopY = startY;
             canvas.drawLine(startX, startY, stopX, stopY, paint);
         }
@@ -106,11 +136,11 @@ public class GameView extends View {
     /**
      * 返回值判断程序输赢
      *
-     * @param isAdd
      * @return
      */
-    public boolean refreshView(boolean isAdd) {
-        List<Point> pointList = snakeBean.getSnake();
+    public boolean refreshView() {
+        boolean isAdd = false;
+        List<Point> pointList = snake.getSnake();
         Point point = pointList.get(0);
         LogUtil.i("point = " + point);
         Point pointNew = null;
@@ -123,6 +153,16 @@ public class GameView extends View {
         } else if (control == Control.DOWN) {
             pointNew = new Point(point.getX(), point.getY() + 1);
         }
+
+        if (isEat(point)) {
+            Random random = new Random();
+            food = new Food(random.nextInt(grid.getGridSize()), random.nextInt(grid.getGridSize()));
+            isAdd = true;
+            count++;
+        } else {
+            isAdd = false;
+        }
+
         if (pointNew != null) {
             pointList.add(0, pointNew);
             if (!isAdd) {
@@ -132,7 +172,7 @@ public class GameView extends View {
 
         if (isFailed(point)) {
             isFailed = true;
-            invalidate();
+            invalidate(); // 触发视图的绘制刷新
             return true;
         }
         invalidate();
@@ -147,9 +187,9 @@ public class GameView extends View {
             return true;
         } else if (point.getX() == 0 && control == Control.LEFT) {
             return true;
-        } else if (point.getY() == gridBean.getGridSize() - 1 && control == Control.DOWN) {
+        } else if (point.getY() == grid.getGridSize() - 1 && control == Control.DOWN) {
             return true;
-        } else if (point.getX() == gridBean.getGridSize() - 1 && control == Control.RIGHT) {
+        } else if (point.getX() == grid.getGridSize() - 1 && control == Control.RIGHT) {
             return true;
         }
         return false;
