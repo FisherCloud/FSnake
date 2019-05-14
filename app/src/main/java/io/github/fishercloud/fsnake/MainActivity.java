@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import io.github.fishercloud.fsnake.view.GameView;
 
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
                     sendControlMessage();
                 } else {
                     // 结束告诉程序你输了
+                    Toast.makeText(MainActivity.this, "游戏结束", Toast.LENGTH_SHORT).show();
                 }
 
             }

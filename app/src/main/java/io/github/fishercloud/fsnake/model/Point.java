@@ -1,14 +1,14 @@
-package io.github.fishercloud.fsnake.bean;
+package io.github.fishercloud.fsnake.model;
 
 /**
  * Created by ic on 2017/12/7.
  */
 
-public class PointBean {
+public class Point {
     private int x;
     private int y;
 
-    public PointBean(int x, int y) {
+    public Point(int x, int y) {
         this.x = x;
         this.y = y;
     }

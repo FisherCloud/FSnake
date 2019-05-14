@@ -11,7 +11,6 @@ import android.util.Log;
  * QQ 1400100300
  */
 public class LogUtil {
- 	private static String tag = "AppName";
 	private static LogUtil log;
 	private LogUtil() {}
 
@@ -76,6 +75,7 @@ public class LogUtil {
 		if (name != null) {
 			str = name + " - " + str;
 		}
+		String tag = "AppName";
 		switch (index) {
 		case Log.VERBOSE:
 			Log.v(tag, str.toString());
