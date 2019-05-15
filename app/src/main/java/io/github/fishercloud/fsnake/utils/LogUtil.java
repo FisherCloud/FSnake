@@ -7,9 +7,6 @@ import android.util.Log;
  * 使打印日志变得简单
  * 自动识别调用日志函数的类名 方法名 与位置
  * 不需要繁琐的TAG
- *
- * @author iscoding
- * QQ 1400100300
  */
 public class LogUtil {
     private static LogUtil log;

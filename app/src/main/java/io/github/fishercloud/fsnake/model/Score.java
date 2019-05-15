@@ -1,7 +1,5 @@
 package io.github.fishercloud.fsnake.model;
 
-import java.util.Date;
-
 public class Score {
     public Integer score = 0;
     public String date;

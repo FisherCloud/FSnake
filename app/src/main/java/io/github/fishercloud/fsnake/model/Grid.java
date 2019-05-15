@@ -1,9 +1,5 @@
 package io.github.fishercloud.fsnake.model;
 
-/**
- * Created by ic on 2017/11/21.
- */
-
 public class Grid {
 
     private int height = 1920; //手机高

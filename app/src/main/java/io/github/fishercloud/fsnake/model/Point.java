@@ -1,9 +1,5 @@
 package io.github.fishercloud.fsnake.model;
 
-/**
- * Created by ic on 2017/12/7.
- */
-
 public class Point {
     private int x = 0;
     private int y = 0;

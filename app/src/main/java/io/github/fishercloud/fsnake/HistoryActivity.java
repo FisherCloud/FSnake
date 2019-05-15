@@ -2,20 +2,17 @@ package io.github.fishercloud.fsnake;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
-import java.sql.SQLData;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.github.fishercloud.fsnake.model.Score;
 import io.github.fishercloud.fsnake.sqlite.DatabaseHelper;
 
 public class HistoryActivity extends AppCompatActivity {

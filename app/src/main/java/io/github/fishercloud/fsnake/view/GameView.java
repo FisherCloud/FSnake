@@ -104,15 +104,6 @@ public class GameView extends View {
         canvas.drawRect(x, y, x2, y2, paint);
     }
 
-    private boolean isEat(Point point) {
-        LogUtil.i("point.get(x) = " + point.getX());
-        if (point.getX() == food.getX() && point.getY() == food.getY()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     private void drawGrid(Canvas canvas) {
         //画竖线
         for (int i = 0; i <= grid.getGridSize(); i++) {
@@ -179,6 +170,15 @@ public class GameView extends View {
         //此处只是刷新页面
         //刷新页面会重新绘制
         return false;
+    }
+
+    private boolean isEat(Point point) {
+        LogUtil.i("point.get(x) = " + point.getX());
+        if (point.getX() == food.getX() && point.getY() == food.getY()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private boolean isFailed(Point point) {
